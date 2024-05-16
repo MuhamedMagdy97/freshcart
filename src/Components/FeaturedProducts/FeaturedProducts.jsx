@@ -35,7 +35,7 @@ async function getProducts() {
       ) : (
         <div className="row gy-4">
           {products.map((product) => (
-            <div key={product.id} className="col-lg-2 ">
+            <div key={product.id} className="col-lg-3 ">
                 <Link to={`/ProductDetailes/${product.id}`}>
                 <div className="product my-3 p-2">
                   <img
