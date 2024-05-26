@@ -9,6 +9,7 @@ import Register from "./Components/Register/Register.jsx";
 import Login from "./Components/Login/Login.jsx";
 import NotFound from "./Components/NotFound/NotFound.jsx";
 import ProductDetailes from "./Components/ProductDetailes/ProductDetailes.jsx";
+import  { Toaster } from "react-hot-toast";
 
 
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
@@ -96,6 +97,7 @@ function App() {
   return (
     <>
       <RouterProvider router={routers}></RouterProvider>
+      <Toaster/>
     </>
   );
 }

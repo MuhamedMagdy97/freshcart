@@ -5,23 +5,19 @@ import { ColorRing } from "react-loader-spinner";
 // import style from "./Brands.module.css";
 
 export default function Brands() {
-
-const [brand, setBrand] = useState([]);
+  const [brand, setBrand] = useState([]);
   const [loading, setLoading] = useState(true);
-  
 
   async function getAllBrands() {
-    let { data } = await axios.get(`https://ecommerce.routemisr.com/api/v1/brands`);
+    let { data } = await axios.get(
+      `https://ecommerce.routemisr.com/api/v1/brands`
+    );
     setBrand(data.data);
     setLoading(false);
-}
+  }
   useEffect(() => {
     getAllBrands();
-},[])
-
-
-
-
+  }, []);
 
   return (
     <>

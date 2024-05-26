@@ -1,26 +1,52 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 // import style from "./FeaturedProducts.module.css";
 import axios from "axios";
 import { ColorRing } from "react-loader-spinner";
 import { Link } from "react-router-dom";
-
+import { useQuery } from "react-query";
+import { CartContext } from "../../Context/CartContext";
+import toast from "react-hot-toast";
 
 export default function FeaturedProducts() {
-const [products , setProducts] = useState([])
-const [loading , setLoading] = useState(true)
-async function getProducts() {
-  let { data } = await axios.get(`https://ecommerce.routemisr.com/api/v1/products`);
-  setProducts(data.data);
-  setLoading(false)
-}
-  useEffect(() => {
-    getProducts();
-},[])
+  // const [products , setProducts] = useState([])
+  // const [loading , setLoading] = useState(true)
+  // async function getProducts() {
+  //   let { data } = await axios.get(`https://ecommerce.routemisr.com/api/v1/products`);
+  //   setProducts(data.data);
+  //   setLoading(false)
+  // }
+  //   useEffect(() => {
+  //     getProducts();
+  // },[])
 
+  // use react query
+
+  function getProducts() {
+    return axios.get(`https://ecommerce.routemisr.com/api/v1/products`);
+  }
+
+  let { data, isLoading } = useQuery("FeaturedProducts", getProducts, {
+    // cacheTime:3000,
+    // refetchOnMount: false,
+    // refetchOnWindowFocus:false,
+    // staleTime:50000,
+    // refetchInterval:1000,
+    // refetchOnReconnect: false
+  });
+
+  let { addToCart } = useContext(CartContext);
+
+  async function postToCart(id) {
+    let { data } = await addToCart(id);
+    console.log(data);
+    toast.success(data.message, {
+      duration: 2000,
+    });
+  }
 
   return (
     <>
-      {loading ? (
+      {isLoading ? (
         <div className="row justify-content-center align-items-center vh-100">
           <ColorRing
             visible={true}
@@ -34,10 +60,10 @@ async function getProducts() {
         </div>
       ) : (
         <div className="row gy-4">
-          {products.map((product) => (
+          {data?.data.data.map((product) => (
             <div key={product.id} className="col-lg-3 ">
+              <div className="product my-3 p-2">
                 <Link to={`/ProductDetailes/${product.id}`}>
-                <div className="product my-3 p-2">
                   <img
                     src={product.imageCover}
                     className="w-100"
@@ -56,16 +82,18 @@ async function getProducts() {
                       {product.ratingsAverage}
                     </span>
                   </div>
-                  <button className="btn bg-main text-main-light w-100 btn-sm">
-                    Add To Cart
-                  </button>
-                </div>
-            </Link>
+                </Link>
+                <button
+                  onClick={() => postToCart(product.id)}
+                  className="btn bg-main text-main-light w-100 btn-sm"
+                >
+                  Add To Cart
+                </button>
               </div>
+            </div>
           ))}
         </div>
       )}
     </>
   );
-  
 }
