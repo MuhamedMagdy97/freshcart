@@ -2,27 +2,38 @@ import React, { useEffect, useState } from "react";
 // import style from "./Categories.module.css";
 import axios from "axios";
 import { ColorRing } from "react-loader-spinner";
+import { useQuery } from "react-query";
 
 export default function Categories() {
-  const [cat, setCat] = useState([]);
-  const [loading, setLoading] = useState(true);
+  // const [cat, setCat] = useState([]);
+  // const [loading, setLoading] = useState(true);
 
-  async function getProductsCat() {
-    let { data } = await axios.get(
-      `https://ecommerce.routemisr.com/api/v1/categories`
-    );
-    setCat(data.data);
-    setLoading(false);
-    console.log(data.data);
+  // async function getProductsCat() {
+  //   let { data } = await axios.get(
+  //     `https://ecommerce.routemisr.com/api/v1/categories`
+  //   );
+  //   setCat(data.data);
+  //   setLoading(false);
+  //   console.log(data.data);
+  // }
+
+  // useEffect(() => {
+  //   getProductsCat();
+  // }, []);
+
+  //react query
+
+  function getCatigores() {
+    return axios.get(`https://ecommerce.routemisr.com/api/v1/categories`);
   }
+  let { data ,isLoading} = useQuery("Categories", getCatigores);
+  
 
-  useEffect(() => {
-    getProductsCat();
-  }, []);
+
 
   return (
     <>
-      {loading ? (
+      {isLoading ? (
         <div className="row justify-content-center align-items-center vh-100 ">
           <ColorRing
             visible={true}
@@ -36,13 +47,14 @@ export default function Categories() {
         </div>
       ) : (
         <div className="row gy-4 mt-5">
-          {cat.map((category) => (
+          {data?.data.data.map((category) => (
             <div key={category.id} className="col-md-4">
               <div className="cat-container">
                 <div className="cat-img product ">
                   <img
                     src={category.image}
-                    className="w-100 hight img"
+                    className="w-100 img"
+                    height={400}
                     alt={category.name}
                   />
                   <h3 className="h2 text-main text-center pt-4">

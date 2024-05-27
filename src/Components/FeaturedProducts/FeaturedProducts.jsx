@@ -33,6 +33,7 @@ export default function FeaturedProducts() {
     // refetchInterval:1000,
     // refetchOnReconnect: false
   });
+  console.log(data?.data.data)
 
   let { addToCart } = useContext(CartContext);
 
@@ -46,6 +47,7 @@ export default function FeaturedProducts() {
 
   return (
     <>
+      <h2 className="h1 fw-bolder mt-5">Featured Products </h2>
       {isLoading ? (
         <div className="row justify-content-center align-items-center vh-100">
           <ColorRing
