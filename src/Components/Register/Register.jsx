@@ -6,7 +6,7 @@ import * as Yup from "yup";
 import axios from "axios";
 import { Hourglass } from "react-loader-spinner";
 import { Link, useNavigate } from "react-router-dom";
-
+import { Helmet } from "react-helmet";
 
 
 export default function Register() {
@@ -67,6 +67,10 @@ export default function Register() {
 
   return (
     <>
+      <Helmet>
+        <meta charSet="utf-8" />
+        <title>Register</title>
+      </Helmet>
       <div className="row mt-5 py-4">
         <div className="col-md-12">
           <div className="header-content">

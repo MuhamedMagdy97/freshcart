@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { ColorRing } from "react-loader-spinner";
 import { useQuery } from "react-query";
+import { Helmet } from "react-helmet";
 
 export default function Categories() {
   // const [cat, setCat] = useState([]);
@@ -46,25 +47,31 @@ export default function Categories() {
           />
         </div>
       ) : (
-        <div className="row gy-4 mt-5">
-          {data?.data.data.map((category) => (
-            <div key={category.id} className="col-md-4">
-              <div className="cat-container">
-                <div className="cat-img product ">
-                  <img
-                    src={category.image}
-                    className="w-100 img"
-                    height={400}
-                    alt={category.name}
-                  />
-                  <h3 className="h2 text-main text-center pt-4">
-                    {category.name}
-                  </h3>
+        <>
+          <Helmet>
+            <meta charSet="utf-8" />
+            <title>Categories</title>
+          </Helmet>
+          <div className="row gy-4 mt-5">
+            {data?.data.data.map((category) => (
+              <div key={category.id} className="col-md-4">
+                <div className="cat-container">
+                  <div className="cat-img product ">
+                    <img
+                      src={category.image}
+                      className="w-100 img"
+                      height={400}
+                      alt={category.name}
+                    />
+                    <h3 className="h2 text-main text-center pt-4">
+                      {category.name}
+                    </h3>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        </>
       )}
     </>
   );

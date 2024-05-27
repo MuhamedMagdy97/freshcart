@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import { ColorRing } from "react-loader-spinner";
 import Slider from "react-slick";
+import { Helmet } from "react-helmet";
 
 export default function ProductDetailes() {
   //slick slider
@@ -50,37 +51,46 @@ export default function ProductDetailes() {
           />
         </div>
       ) : (
-        <div className="row align-items-center mt-5">
-          <div className="col-md-4">
-            <Slider {...settings}>
-              {details.images.map((image) => (
-                <img
-                  key={details.id}
-                  className="w-100"
-                  src={image}
-                  alt={details.title}
-                />
-              ))}
-            </Slider>
-          </div>
-          <div className="col-md-7">
-            <div className="details">
-              <h3 className="h5 ">{details.title}</h3>
-              <p className="py-3">{details.description}</p>
-              <span className="font-sm text-main">{details.category.name}</span>
-              <div className="d-flex py-3 justify-content-between align-items-center">
-                <span className="font-sm ">{details.price}EGP</span>
-                <span className="font-sm ">
-                  <i className="fas fa-star rating-color me-1"></i>
-                  {details.ratingsAverage}
+        <>
+          <Helmet>
+            <meta charSet="utf-8" />
+              <title>{ details.title}</title>
+            <link rel="canonical" href="http://mysite.com/example" />
+          </Helmet>
+          <div className="row align-items-center mt-5">
+            <div className="col-md-4">
+              <Slider {...settings}>
+                {details.images.map((image) => (
+                  <img
+                    key={details.id}
+                    className="w-100"
+                    src={image}
+                    alt={details.title}
+                  />
+                ))}
+              </Slider>
+            </div>
+            <div className="col-md-7">
+              <div className="details">
+                <h3 className="h5 ">{details.title}</h3>
+                <p className="py-3">{details.description}</p>
+                <span className="font-sm text-main">
+                  {details.category.name}
                 </span>
+                <div className="d-flex py-3 justify-content-between align-items-center">
+                  <span className="font-sm ">{details.price}EGP</span>
+                  <span className="font-sm ">
+                    <i className="fas fa-star rating-color me-1"></i>
+                    {details.ratingsAverage}
+                  </span>
+                </div>
+                <button className="btn bg-main text-main-light w-100 btn-sm">
+                  Add To Cart
+                </button>
               </div>
-              <button className="btn bg-main text-main-light w-100 btn-sm">
-                Add To Cart
-              </button>
             </div>
           </div>
-        </div>
+        </>
       )}
     </>
   );

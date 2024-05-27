@@ -7,6 +7,7 @@ import axios from "axios";
 import { Hourglass } from "react-loader-spinner";
 import { Link, useNavigate } from "react-router-dom";
 import { UserContext } from "../../Context/UserContext";
+import { Helmet } from "react-helmet";
 
 export default function Login() {
   const [loading, setloading] = useState(false);
@@ -49,6 +50,10 @@ export default function Login() {
 
   return (
     <>
+      <Helmet>
+        <meta charSet="utf-8" />
+        <title>Login</title>
+      </Helmet>
       <div className="row mt-5 py-4">
         <div className="col-md-12">
           <div className="header-content">

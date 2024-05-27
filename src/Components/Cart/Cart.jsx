@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { CartContext } from "../../Context/CartContext";
 import { ColorRing } from "react-loader-spinner";
 import { Link } from "react-router-dom";
+import { Helmet } from "react-helmet";
 // import style from "./Cart.module.css";
 
 export default function Cart() {
@@ -82,6 +83,10 @@ export default function Cart() {
           </div>
         ) : (
           <>
+            <Helmet>
+              <meta charSet="utf-8" />
+              <title>Cart</title>
+            </Helmet>
             {cart.numOfCartItems === 0 ? (
               <p className="text-center fw-bolder">Your Cart is empty</p>
             ) : (
