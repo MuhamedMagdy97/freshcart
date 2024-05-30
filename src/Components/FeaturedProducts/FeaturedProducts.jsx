@@ -33,7 +33,7 @@ export default function FeaturedProducts() {
     // refetchInterval:1000,
     // refetchOnReconnect: false
   });
-  console.log(data?.data.data)
+  // console.log(data?.data.data)
 
   let { addToCart } = useContext(CartContext);
 

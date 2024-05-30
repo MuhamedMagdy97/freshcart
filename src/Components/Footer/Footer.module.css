@@ -1,1 +1,13 @@
-.Footer {}
+
+.image{
+    width: 100px;
+    height: 100px;
+    padding: 20px;
+}
+
+.apps{
+    width: 200px;
+    height: 100px;
+    padding: 30px;
+}
+

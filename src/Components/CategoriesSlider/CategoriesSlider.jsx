@@ -29,11 +29,16 @@ export default function CategoriesSlider() {
     <>
       <div className="row ">
         <Slider {...settings}>
-          {data?.data.data.map((category) => (
-            <div key={category.id} className="col-md-2">
+          {data?.data.data.map((category, index) => (
+            <div key={index} className="col-md-2">
               <div className="img">
-                <img src={category.image} height={200} className="w-100" alt={category.name} />
-                <p>{ category.name }</p>
+                <img
+                  src={category.image}
+                  height={200}
+                  className="w-100"
+                  alt={category.name}
+                />
+                <p>{category.name}</p>
               </div>
             </div>
           ))}

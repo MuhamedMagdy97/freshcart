@@ -20,7 +20,7 @@ root.render(
     <UserContextProvider>
       <QueryClientProvider client={queryClient}>
         <App />
-        <ReactQueryDevtools />
+        {/* <ReactQueryDevtools /> */}
       </QueryClientProvider>
     </UserContextProvider>
   </CartContextProvider>

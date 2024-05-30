@@ -9,11 +9,12 @@ import Register from "./Components/Register/Register.jsx";
 import Login from "./Components/Login/Login.jsx";
 import NotFound from "./Components/NotFound/NotFound.jsx";
 import ProductDetailes from "./Components/ProductDetailes/ProductDetailes.jsx";
+import ShippingAddress from "./Components/ShippingAddress/ShippingAddress.jsx";
+import AllOrders from "./Components/AllOrders/AllOrders.jsx";
+
 import  { Toaster } from "react-hot-toast";
-
-
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import UserContextProvider, { UserContext } from "./Context/UserContext.js";
+import  { UserContext } from "./Context/UserContext.js";
 import { useContext, useEffect } from "react";
 import ProtectedRoute from "./Components/ProtectedRoute/ProtectedRoute.jsx";
 
@@ -72,6 +73,22 @@ function App() {
           ),
         },
         {
+          path: "AllOrders",
+          element: (
+            <ProtectedRoute>
+              <AllOrders />
+            </ProtectedRoute>
+          ),
+        },
+        {
+          path: "ShippingAddress/:cartId",
+          element: (
+            <ProtectedRoute>
+              <ShippingAddress />
+            </ProtectedRoute>
+          ),
+        },
+        {
           path: "ProductDetailes/:id",
           element: (
             <ProtectedRoute>
@@ -92,7 +109,7 @@ function App() {
     if (localStorage.getItem("userToken")) {
       setUserToken(localStorage.getItem("userToken"));
     }
-  }, []);
+  }, [ ]);
 
   return (
     <>
