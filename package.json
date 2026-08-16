@@ -2,7 +2,8 @@
   "name": "freshcart",
   "version": "0.1.0",
   "private": true,
-  "homepage": "http://MuhamedMagdy97.github.io/freshcart",
+  "homepage": "https://MuhamedMagdy97.github.io/freshcart",
+  "description": "FreshCart ecommerce storefront",
   "dependencies": {
     "@fortawesome/fontawesome-free": "^6.5.2",
     "@testing-library/jest-dom": "^5.17.0",
@@ -30,27 +31,17 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
+    "test:ci": "react-scripts test --watchAll=false",
     "eject": "react-scripts eject",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build"
   },
   "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
+    "extends": ["react-app", "react-app/jest"]
   },
   "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
+    "production": [">0.2%", "not dead", "not op_mini all"],
+    "development": ["last 1 chrome version", "last 1 firefox version", "last 1 safari version"]
   },
   "devDependencies": {
     "gh-pages": "^6.1.1"
