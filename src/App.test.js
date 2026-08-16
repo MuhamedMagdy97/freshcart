@@ -1,3 +1,9 @@
+jest.mock("axios", () => ({
+  create: jest.fn(() => ({
+    interceptors: { request: { use: jest.fn() } },
+  })),
+}));
+
 import { render, screen } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "react-query";
 import App from "./App";
