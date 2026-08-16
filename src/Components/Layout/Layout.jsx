@@ -1,26 +1,16 @@
 import React from "react";
-import style from "./Layout.module.css";
 import Navbar from "../Navbar/Navbar";
 import Footer from "../Footer/Footer";
 import { Outlet } from "react-router-dom";
-import { Offline, Online } from "react-detect-offline";
+import { Offline } from "react-detect-offline";
 
 export default function Layout() {
-  return (
-    <>
-      <div className="flex-container">
-        <Navbar />
-        <div className="container">
-          {/* <Online>Only shown when you're online</Online> */}
-          <Offline>
-            <div className="loading">
-              <h2 className="fw-bold">Only shown offline (surprise!)</h2>
-            </div>
-          </Offline>
-          <Outlet></Outlet>
-        </div>
-      </div>
-        <Footer />
-    </>
-  );
+  return <div className="flex-container">
+    <Navbar />
+    <main className="container flex-grow-1">
+      <Offline><div className="alert alert-warning mt-3" role="alert">You are offline. Some information may be unavailable.</div></Offline>
+      <Outlet />
+    </main>
+    <Footer />
+  </div>;
 }
