@@ -1,221 +1,85 @@
-import style from "./Register.module.css";
 import React, { useState } from "react";
 import { useFormik } from "formik";
 import cartPic from "../../Assets/images/register.jpg";
 import * as Yup from "yup";
-import axios from "axios";
 import { Hourglass } from "react-loader-spinner";
 import { Link, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet";
-
+import toast from "react-hot-toast";
+import { apiClient, getApiErrorMessage } from "../../api/client";
 
 export default function Register() {
   const [loading, setLoading] = useState(false);
   const [apiError, setApiError] = useState(null);
-
-  let navigate = useNavigate();
+  const navigate = useNavigate();
 
   async function registerSubmit(values) {
     setLoading(true);
-    let { data } = await axios.post(
-      `https://ecommerce.routemisr.com/api/v1/auth/signup`,
-      values)
-      .catch((err) => {
-        setApiError(err.response.data.message)
-        setLoading(false)
-        navigate('/login');
-      });
+    setApiError(null);
 
-    if (data.message == "success") {
+    try {
+      const { data } = await apiClient.post("/auth/signup", values);
+
+      if (data?.message === "success") {
+        toast.success("Account created. Please sign in.");
+        navigate("/login", { replace: true });
+      } else {
+        setApiError(data?.message || "Unable to create your account.");
+      }
+    } catch (error) {
+      setApiError(getApiErrorMessage(error, "Unable to create your account."));
+    } finally {
       setLoading(false);
-
     }
   }
 
-  let validationSchema = Yup.object({
-    name: Yup.string()
-      .required("Name is Required")
-      .min(3, "min length is 3")
-      .max(10, "max length is 10"),
-
-    email: Yup.string().required("Email is Required").email("invalid email"),
-
-    password: Yup.string()
-      .required("Password is Required")
-      .matches(/^[A-Z][\w @]{5,8}$/, "invalid Password"),
-
-    rePassword: Yup.string()
-      .required("RePassword is required")
-      .oneOf([Yup.ref("password")], "Password and rePassword not the same"),
-
-    phone: Yup.string()
-      .required("phone is Required")
-      .matches(/^01[0125][0-9]{8}$/, "we need egyption number"),
+  const validationSchema = Yup.object({
+    name: Yup.string().required("Name is required").min(3, "Name must be at least 3 characters").max(50, "Name must be 50 characters or fewer"),
+    email: Yup.string().required("Email is required").email("Enter a valid email"),
+    password: Yup.string().required("Password is required").min(6, "Password must be at least 6 characters"),
+    rePassword: Yup.string().required("Please confirm your password").oneOf([Yup.ref("password")], "Passwords do not match"),
+    phone: Yup.string().required("Phone is required").matches(/^01[0125][0-9]{8}$/, "Enter a valid Egyptian phone number"),
   });
 
-  let formik = useFormik({
-    initialValues: {
-      name: "",
-      email: "",
-      password: "",
-      rePassword: "",
-      phone: "",
-    },
+  const formik = useFormik({
+    initialValues: { name: "", email: "", password: "", rePassword: "", phone: "" },
     validationSchema,
     onSubmit: registerSubmit,
   });
 
+  const fields = [
+    ["name", "Your full name", "text", "name"],
+    ["email", "Your email", "email", "email"],
+    ["password", "Your password", "password", "new-password"],
+    ["rePassword", "Confirm your password", "password", "new-password"],
+    ["phone", "Your phone number", "tel", "tel"],
+  ];
+
   return (
     <>
-      <Helmet>
-        <meta charSet="utf-8" />
-        <title>Register</title>
-      </Helmet>
-      <div className="row mt-5 py-4">
-        <div className="col-md-12">
-          <div className="header-content">
-            <h2 className="text-center ">Register</h2>
-          </div>
-        </div>
-      </div>
+      <Helmet><title>Register | FreshCart</title></Helmet>
+      <div className="row mt-5 py-4"><div className="col-md-12"><h1 className="h2 text-center">Register</h1></div></div>
       <div className="row mt-2 border rounded w-50 p-4 mx-auto">
-        <div className="col-md-6 ">
-          <div className="register-content  ">
-            <h3 className="h5 mb-3">Fill Your information</h3>
-            <form onSubmit={formik.handleSubmit}>
-              {apiError ? (
-                <div className="alert alert-danger border-0 text-center">
-                  {apiError}
-                </div>
-              ) : null}
-              {/* name */}
-              {formik.errors.name && formik.touched.name ? (
-                <div className="alert alert-danger border-0 text-center  py-2">
-                  {formik.errors.name}
-                </div>
-              ) : null}
-              <input
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                type="text"
-                id="name"
-                name="name"
-                className="w-100 mt-2 mb-1 form-control"
-                placeholder="Your Full Name"
-              />
-
-              {/* email */}
-              {formik.errors.email && formik.touched.email ? (
-                <div className="alert alert-danger border-0 text-center  py-2">
-                  {formik.errors.email}
-                </div>
-              ) : null}
-              <input
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                type="email"
-                id="email"
-                name="email"
-                className="w-100 mt-2  mb-1 form-control"
-                placeholder="Enter Your Email"
-                autoComplete="new-email"
-              />
-
-              {/* password */}
-
-              {formik.errors.password && formik.touched.password ? (
-                <div className="alert alert-danger border-0 text-center  py-2">
-                  {formik.errors.password}
-                </div>
-              ) : null}
-
-              <input
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                type="password"
-                id="password"
-                name="password"
-                className="w-100 mt-2  mb-1 form-control"
-                placeholder="Your Password"
-                autoComplete="new-password"
-              />
-              {/* rePassword */}
-
-              {formik.errors.rePassword && formik.touched.rePassword ? (
-                <div className="alert alert-danger border-0 text-center  py-2">
-                  {formik.errors.rePassword}
-                </div>
-              ) : null}
-
-              <input
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                type="password"
-                id="rePassword"
-                name="rePassword"
-                className="w-100 mt-2 mb-1 form-control"
-                placeholder="Your rePassword"
-                autoComplete="renew-password"
-              />
-              {/* phone */}
-
-              {formik.errors.phone && formik.touched.phone ? (
-                <div className="alert alert-danger border-0 text-center  py-2">
-                  {formik.errors.phone}
-                </div>
-              ) : null}
-
-              <input
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                type="tel"
-                id="phone"
-                name="phone"
-                className="w-100 mt-2 mb-1 form-control"
-                placeholder="Your Phone"
-              />
-              <div className="button text-center">
-                {loading ? (
-                  <button
-                    disabled={!(formik.isValid && formik.dirty)}
-                    type="button"
-                    className="btn bg-main text-light mt-1 w-75"
-                  >
-                    <Hourglass
-                      visible={true}
-                      height="25"
-                      width="25"
-                      ariaLabel="hourglass-loading"
-                      wrapperStyle={{}}
-                      wrapperClass=""
-                      colors={["#FFF", "#0AAD0A"]}
-                    />
-                  </button>
-                ) : (
-                  <button
-                    disabled={!(formik.isValid && formik.dirty)}
-                    type="submit"
-                    className="btn bg-main text-light mt-1 w-75"
-                  >
-                    Register
-                  </button>
-                )}
-                <button className="btn btn-outline-info mt-2  w-75 ">
-                  <Link to={"/login"}>Login Now</Link>
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-        <div className="col-md-6">
-          <div className="right-img">
-            <img
-              src={cartPic}
-              className="w-100 mx-auto py-3"
-              alt="shopping cart"
-            />
-          </div>
-        </div>
+        <div className="col-md-6"><div className="register-content">
+          <h2 className="h5 mb-3">Create your account</h2>
+          <form onSubmit={formik.handleSubmit} noValidate>
+            {apiError && <div className="alert alert-danger border-0 text-center" role="alert">{apiError}</div>}
+            {fields.map(([name, placeholder, type, autoComplete]) => (
+              <React.Fragment key={name}>
+                {formik.errors[name] && formik.touched[name] && <div className="alert alert-danger border-0 text-center py-2">{formik.errors[name]}</div>}
+                <label className="visually-hidden" htmlFor={name}>{placeholder}</label>
+                <input onChange={formik.handleChange} onBlur={formik.handleBlur} type={type} id={name} name={name} autoComplete={autoComplete} className="w-100 mt-2 mb-1 form-control" placeholder={placeholder} />
+              </React.Fragment>
+            ))}
+            <div className="button text-center">
+              <button disabled={loading || !(formik.isValid && formik.dirty)} type="submit" className="btn bg-main text-light mt-1 w-75">
+                {loading ? <Hourglass visible height="25" width="25" ariaLabel="Creating account" colors={["#FFF", "#0AAD0A"]} /> : "Register"}
+              </button>
+              <Link className="btn btn-outline-info mt-2 w-75" to="/login">Login now</Link>
+            </div>
+          </form>
+        </div></div>
+        <div className="col-md-6"><img src={cartPic} className="w-100 mx-auto py-3" alt="Shopping cart" /></div>
       </div>
     </>
   );
