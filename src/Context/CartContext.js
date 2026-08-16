@@ -1,80 +1,31 @@
-import axios from "axios";
 import { createContext } from "react";
+import { apiClient, getAppUrl } from "../api/client";
 
-export let CartContext = createContext();
+export const CartContext = createContext(null);
 
-export default function CartContextProvider(props) {
-  let headers = {
-    token: localStorage.getItem("userToken"),
-  };
-
-
-
-  //http://localhost:3000 change to the domain name
+export default function CartContextProvider({ children }) {
   function checkOutSession(cartId, shippingAddress) {
-    return axios
-      .post(
-        `https://ecommerce.routemisr.com/api/v1/orders/checkout-session/${cartId}?url=http://localhost:3000`,
-        {
-          shippingAddress,
-        },
-        {
-          //config header
-          headers,
-        }
-      )
-      .then((responce) => responce)
-      .catch((err) => err);
+    return apiClient.post(
+      `/orders/checkout-session/${encodeURIComponent(cartId)}`,
+      { shippingAddress },
+      { params: { url: getAppUrl("/orders") } }
+    );
   }
+
   function addToCart(productId) {
-    return axios
-      .post(
-        `https://ecommerce.routemisr.com/api/v1/cart`,
-        {
-          productId,
-        },
-        {
-          //config header
-          headers,
-        }
-      )
-      .then((responce) => responce)
-      .catch((err) => err);
+    return apiClient.post("/cart", { productId });
   }
+
   function getCartItems() {
-    return axios
-      .get(`https://ecommerce.routemisr.com/api/v1/cart`, {
-        //config header
-        headers,
-      })
-      .then((responce) => responce)
-      .catch((err) => err);
+    return apiClient.get("/cart");
   }
 
   function deleteCartItems(productId) {
-    return axios
-      .delete(`https://ecommerce.routemisr.com/api/v1/cart/${productId}`, {
-        //config header
-        headers,
-      })
-      .then((responce) => responce)
-      .catch((err) => err);
+    return apiClient.delete(`/cart/${encodeURIComponent(productId)}`);
   }
 
   function updateCartItems(productId, count) {
-    return axios
-      .put(
-        `https://ecommerce.routemisr.com/api/v1/orders/user/${productId}`,
-        {
-          count,
-        },
-        {
-          //config header
-          headers,
-        }
-      )
-      .then((responce) => responce)
-      .catch((err) => err);
+    return apiClient.put(`/cart/${encodeURIComponent(productId)}`, { count });
   }
 
   return (
@@ -85,10 +36,9 @@ export default function CartContextProvider(props) {
         deleteCartItems,
         updateCartItems,
         checkOutSession,
-        
       }}
     >
-      {props.children}
+      {children}
     </CartContext.Provider>
   );
 }
