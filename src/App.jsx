@@ -1,122 +1,51 @@
 import "./App.css";
-import Home from "./Components/Home/Home.jsx";
-import Layout from "./Components/Layout/Layout.jsx";
-import Cart from "./Components/Cart/Cart.jsx";
-import Brands from "./Components/Brands/Brands.jsx";
-import Categories from "./Components/Categories/Categories.jsx";
-import Products from "./Components/Products/Products.jsx";
-import Register from "./Components/Register/Register.jsx";
-import Login from "./Components/Login/Login.jsx";
-import NotFound from "./Components/NotFound/NotFound.jsx";
-import ProductDetailes from "./Components/ProductDetailes/ProductDetailes.jsx";
-import ShippingAddress from "./Components/ShippingAddress/ShippingAddress.jsx";
-import AllOrders from "./Components/AllOrders/AllOrders.jsx";
-
-import  { Toaster } from "react-hot-toast";
+import { lazy, Suspense } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import  { UserContext } from "./Context/UserContext.js";
-import { useContext, useEffect } from "react";
+import { Toaster } from "react-hot-toast";
+import Layout from "./Components/Layout/Layout.jsx";
 import ProtectedRoute from "./Components/ProtectedRoute/ProtectedRoute.jsx";
 
-function App() {
-  let routers = createBrowserRouter([
-    {
-      path: "",
-      element: <Layout />,
-      children: [
-        {
-          index: true,
-          element: (
-            <ProtectedRoute>
-              <Home />
-            </ProtectedRoute>
-          ),
-        },
-        {
-          path: "brands",
-          element: (
-            <ProtectedRoute>
-              <Brands />
-            </ProtectedRoute>
-          ),
-        },
-        {
-          path: "Categories",
-          element: (
-            <ProtectedRoute>
-              <Categories />
-            </ProtectedRoute>
-          ),
-        },
-        {
-          path: "Products",
-          element: (
-            <ProtectedRoute>
-              <Products />
-            </ProtectedRoute>
-          ),
-        },
-        {
-          path: "Login",
-          element: <Login />,
-        },
-        {
-          path: "Register",
-          element: <Register />,
-        },
-        {
-          path: "Cart",
-          element: (
-            <ProtectedRoute>
-              <Cart />
-            </ProtectedRoute>
-          ),
-        },
-        {
-          path: "AllOrders",
-          element: (
-            <ProtectedRoute>
-              <AllOrders />
-            </ProtectedRoute>
-          ),
-        },
-        {
-          path: "ShippingAddress/:cartId",
-          element: (
-            <ProtectedRoute>
-              <ShippingAddress />
-            </ProtectedRoute>
-          ),
-        },
-        {
-          path: "ProductDetailes/:id",
-          element: (
-            <ProtectedRoute>
-              <ProductDetailes />
-            </ProtectedRoute>
-          ),
-        },
-        {
-          path: "*",
-          element: <NotFound />,
-        },
-      ],
-    },
-  ]);
+const Home = lazy(() => import("./Components/Home/Home.jsx"));
+const Cart = lazy(() => import("./Components/Cart/Cart.jsx"));
+const Brands = lazy(() => import("./Components/Brands/Brands.jsx"));
+const Categories = lazy(() => import("./Components/Categories/Categories.jsx"));
+const Products = lazy(() => import("./Components/Products/Products.jsx"));
+const Register = lazy(() => import("./Components/Register/Register.jsx"));
+const Login = lazy(() => import("./Components/Login/Login.jsx"));
+const NotFound = lazy(() => import("./Components/NotFound/NotFound.jsx"));
+const ProductDetails = lazy(() => import("./Components/ProductDetailes/ProductDetailes.jsx"));
+const ShippingAddress = lazy(() => import("./Components/ShippingAddress/ShippingAddress.jsx"));
+const AllOrders = lazy(() => import("./Components/AllOrders/AllOrders.jsx"));
 
-  let { setUserToken } = useContext(UserContext);
-  useEffect(() => {
-    if (localStorage.getItem("userToken")) {
-      setUserToken(localStorage.getItem("userToken"));
-    }
-  }, [ ]);
-
-  return (
-    <>
-      <RouterProvider router={routers}></RouterProvider>
-      <Toaster/>
-    </>
-  );
+function page(element) {
+  return <Suspense fallback={<div className="loading" role="status">Loading page…</div>}>{element}</Suspense>;
 }
 
-export default App;
+function protectedPage(element) {
+  return page(<ProtectedRoute>{element}</ProtectedRoute>);
+}
+
+const router = createBrowserRouter(
+  [{
+    path: "/",
+    element: <Layout />,
+    children: [
+      { index: true, element: protectedPage(<Home />) },
+      { path: "brands", element: protectedPage(<Brands />) },
+      { path: "categories", element: protectedPage(<Categories />) },
+      { path: "products", element: protectedPage(<Products />) },
+      { path: "cart", element: protectedPage(<Cart />) },
+      { path: "orders", element: protectedPage(<AllOrders />) },
+      { path: "shipping-address/:cartId", element: protectedPage(<ShippingAddress />) },
+      { path: "products/:id", element: protectedPage(<ProductDetails />) },
+      { path: "login", element: page(<Login />) },
+      { path: "register", element: page(<Register />) },
+      { path: "*", element: page(<NotFound />) },
+    ],
+  }],
+  { basename: process.env.PUBLIC_URL || "/" }
+);
+
+export default function App() {
+  return <><RouterProvider router={router} /><Toaster /></>;
+}
