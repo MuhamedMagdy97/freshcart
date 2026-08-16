@@ -1,49 +1,31 @@
 import React from "react";
-import style from "./CategoriesSlider.module.css";
 import Slider from "react-slick";
-import axios from "axios";
 import { useQuery } from "react-query";
+import { apiClient, getApiErrorMessage } from "../../api/client";
 
 export default function CategoriesSlider() {
-
-  function getCatigores() {
-    return axios.get(`https://ecommerce.routemisr.com/api/v1/categories`);
-  }
-  let { data } = useQuery('Categories', getCatigores)
-  
-
-
-
-    var settings = {
-      dots: false,
-      infinite: true,
-      speed: 500,
-      slidesToShow: 6,
-      slidesToScroll: 1,
-      arrows: false,
-      autoplay: true,
-      autoplaySpeed: 2000,
-    };
-
-  return (
-    <>
-      <div className="row ">
-        <Slider {...settings}>
-          {data?.data.data.map((category, index) => (
-            <div key={index} className="col-md-2">
-              <div className="img">
-                <img
-                  src={category.image}
-                  height={200}
-                  className="w-100"
-                  alt={category.name}
-                />
-                <p>{category.name}</p>
-              </div>
-            </div>
-          ))}
-        </Slider>
-      </div>
-    </>
+  const { data, isLoading, isError, error } = useQuery(
+    ["categories"],
+    async () => (await apiClient.get("/categories")).data.data
   );
+  const settings = {
+    dots: false,
+    infinite: data?.length > 6,
+    speed: 500,
+    slidesToShow: 6,
+    slidesToScroll: 1,
+    arrows: false,
+    autoplay: true,
+    autoplaySpeed: 2000,
+    responsive: [
+      { breakpoint: 992, settings: { slidesToShow: 4 } },
+      { breakpoint: 768, settings: { slidesToShow: 3 } },
+      { breakpoint: 576, settings: { slidesToShow: 2 } },
+    ],
+  };
+
+  if (isLoading) return <div className="text-center py-3" role="status">Loading categories…</div>;
+  if (isError) return <div className="alert alert-warning" role="alert">{getApiErrorMessage(error, "Unable to load categories.")}</div>;
+
+  return <div className="row"><Slider {...settings}>{data.map((category) => <div key={category.id} className="px-1"><img src={category.image} height="200" className="w-100 img" alt={category.name} loading="lazy" /><p>{category.name}</p></div>)}</Slider></div>;
 }
