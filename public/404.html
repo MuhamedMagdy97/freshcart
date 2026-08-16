@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>FreshCart</title>
+    <script>
+      (function (location) {
+        var basePath = location.pathname.split("/").slice(0, 2).join("/");
+        var route = location.pathname.slice(basePath.length) || "/";
+        var query = location.search ? "&q=" + encodeURIComponent(location.search.slice(1)) : "";
+        location.replace(location.origin + basePath + "/?p=" + encodeURIComponent(route) + query + location.hash);
+      })(window.location);
+    </script>
+  </head>
+  <body></body>
+</html>
