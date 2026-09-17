@@ -4,7 +4,7 @@ jest.mock("axios", () => ({
   })),
 }));
 
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "react-query";
 import App from "./App";
 import UserContextProvider from "./Context/UserContext";
@@ -23,8 +23,8 @@ function renderApp() {
 
 test("renders the login page for an unauthenticated visitor", async () => {
   window.localStorage.clear();
-  window.history.pushState({}, "", "/login");
   renderApp();
+  fireEvent.click(screen.getByRole("link", { name: "Login" }));
 
   expect(await screen.findByRole("heading", { name: /login/i })).toBeInTheDocument();
 });

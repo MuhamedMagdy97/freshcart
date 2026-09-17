@@ -1,5 +1,4 @@
 import React from "react";
-import style from "./MainSlider.module.css";
 import slide1 from '../../Assets/images/slider-image-1.jpeg'
 import slide2 from '../../Assets/images/slider-image-2.jpeg'
 import slide3 from '../../Assets/images/slider-2.jpeg'
