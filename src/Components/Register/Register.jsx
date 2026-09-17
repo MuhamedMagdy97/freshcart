@@ -72,7 +72,7 @@ export default function Register() {
               </React.Fragment>
             ))}
             <div className="button text-center">
-              <button disabled={loading || !(formik.isValid && formik.dirty)} type="submit" className="btn bg-main text-light mt-1 w-75">
+              <button disabled={loading} type="submit" className="btn bg-main text-light mt-1 w-75">
                 {loading ? <Hourglass visible height="25" width="25" ariaLabel="Creating account" colors={["#FFF", "#0AAD0A"]} /> : "Register"}
               </button>
               <Link className="btn btn-outline-info mt-2 w-75" to="/login">Login now</Link>
